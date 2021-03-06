@@ -9,11 +9,17 @@ import (
 	browser "github.com/pkg/browser"
 	"log"
 	"net/http"
+
+	sw "github.com/AskoTJM/BookCollection/back"
 )
 
 func main() {
+
+	router := sw.NewRouter()
+	log.Fatal(http.ListenAndServe(":8080", router))
+
 	// Open Browser when run
-	const url = "http://golang.org/"
+	const url = "localhost"
 	browser.OpenURL(url)
 
 	fmt.Println("Test1")
