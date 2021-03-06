@@ -1,8 +1,9 @@
-package bback
+package back
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -33,8 +34,8 @@ func NewRouter() *mux.Router {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Fprintf(w, "Backend Developer Task")
+	log.Printf("Test print")
+	//fmt.Fprintf(w, "Backend Developer Task")
 }
 
 var routes = Routes{
@@ -44,4 +45,20 @@ var routes = Routes{
 		"/",
 		Index,
 	},
+}
+
+func Logger(inner http.Handler, name string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		inner.ServeHTTP(w, r)
+
+		log.Printf(
+			"%s %s %s %s",
+			r.Method,
+			r.RequestURI,
+			name,
+			time.Since(start),
+		)
+	})
 }

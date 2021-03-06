@@ -5,12 +5,11 @@ package main
 */
 
 import (
-	"fmt"
-	browser "github.com/pkg/browser"
 	"log"
 	"net/http"
 
 	sw "github.com/AskoTJM/BookCollection/back"
+	browser "github.com/pkg/browser"
 )
 
 func main() {
@@ -22,5 +21,5 @@ func main() {
 	const url = "localhost"
 	browser.OpenURL(url)
 
-	fmt.Println("Test1")
+	//fmt.Println("Test1")
 }
