@@ -1,6 +1,7 @@
 package back
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -35,7 +36,7 @@ func NewRouter() *mux.Router {
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Test print")
-	//fmt.Fprintf(w, "Backend Developer Task")
+	fmt.Fprintf(w, "Backend Developer Task")
 }
 
 var routes = Routes{
