@@ -1,5 +1,141 @@
-<html>
-    <pre>
-        Test Html
-    </pre>
-</html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <title>Book Collection</title>
+ <style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  /* Create two equal columns that floats next to each other */
+  .column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 300px; /* Should be removed. Only for demonstration */
+  }
+  
+  .button{
+    width: 15%;
+  }
+  
+
+
+  .textInput{
+    width: 90%;
+    padding: 7px 14px;
+  }
+
+  .descInput{
+    width: 90%;
+    padding: 7px 14px;
+  }
+
+  h1{
+    text-align: center;
+  }
+  
+
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  </style>
+</head>
+
+<body>
+  <h1>Book Collection</h1>
+  <!-- 
+    This section of the document specifies the table that will
+    be used to display the list of birds and their description
+   -->
+   <div class="row">
+    <div class="column">
+
+   <form action="/books" method="patch">
+    Title:<br/>
+    <input type="text" name="Title" class="textInput">
+    <br/>
+    <br/>
+    Author:<br/>
+    <input type="text" name="Author" class="textInput">
+    <br/>
+    <br/> Description:<br/>
+    <textarea name="Text1" cols="40" rows="5" class="descInput">
+    
+    </textarea>
+    <br/><br/>
+    <input type="button" value="Save New" class="button" >
+    <input type="button" value="Save" class="button"> 
+    <input type="button" value="Delete" class="button">
+  </form>
+  </table>
+  </div>
+</th>
+
+  <div class="column">
+  <table>
+    <tr>
+      <th class="bookHeader">Title</th>
+      <th class="bookHeader">Author</th>
+      <th class="bookHeader">Description</th>
+    </tr>
+    <td>TitleNope</td>
+    <td>AuthNope</td>
+    <td>DescNope</td>
+    </tr>
+  </table>
+</div>
+</div>
+  <br/>
+  <!-- 
+    This section contains the form, that will be used to hit the 
+    `POST /bird` API that we will build in the next section
+   -->
+
+
+  <!-- 
+    Finally, the last section is the script that will
+    run on each page load to fetch the list of birds
+    and add them to our existing table
+   -->
+  <script>
+    bookTable = document.querySelector("table")
+
+    /*
+    Use the browsers `fetch` API to make a GET call to /bird
+    We expect the response to be a JSON list of birds, of the
+    form :
+    [
+      {"species":"...","description":"..."},
+      {"species":"...","description":"..."}
+    ]
+    */
+    fetch("/books")
+      .then(response => response.json())
+      .then(bookList => {
+        //Once we fetch the list, we iterate over it
+        bookList.forEach(book => {
+          // Create the table row
+          row = document.createElement("tr")
+
+          // Create the table data elements for the species and
+					// description columns
+          species = document.createElement("td")
+          species.innerHTML = bird.species
+          description = document.createElement("td")
+          description.innerHTML = bird.description
+
+          // Add the data elements to the row
+          row.appendChild(species)
+          row.appendChild(description)
+          // Finally, add the row element to the table itself
+          bookTable.appendChild(row)
+        })
+      })
+  </script>
+</body>

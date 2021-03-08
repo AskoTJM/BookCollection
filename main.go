@@ -14,7 +14,7 @@ import (
 
 func main() {
 
-	if sw.ConnectToDb() {
+	if sw.CheckIfDatabaseExists() {
 		// Open Browser with when run
 		const url = "http://www.localhost:8080/"
 		err := browser.OpenURL(url)

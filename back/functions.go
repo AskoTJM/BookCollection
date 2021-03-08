@@ -1,32 +1,11 @@
 package back
 
+// Functions for endpoints
+
 import (
-	"database/sql"
 	"log"
 	"net/http"
-	"os"
 )
-
-func ConnectToDb() bool {
-	database, err := sql.Open("sqlite3", "./books.db")
-	if err != nil {
-		log.Printf("Error with opening the database file books.db .")
-		// Create database file if there isn't one.
-		file, err2 := os.Create("books.db")
-		if err2 != nil {
-			log.Printf("Error creating database file books.db .")
-			return false
-		} else {
-			log.Printf("Succesfully created database file books.db")
-			file.Close()
-			return true
-		}
-	} else {
-		log.Print(database)
-		return true
-	}
-	return true
-}
 
 // Return index.html
 func Index(w http.ResponseWriter, r *http.Request) {
