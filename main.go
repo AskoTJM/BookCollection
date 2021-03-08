@@ -13,12 +13,15 @@ import (
 )
 
 func main() {
-	// Open Browser when run
-	const url = "http://www.localhost:8080/"
-	err := browser.OpenURL(url)
-	// Show error if something goes wrong.
-	if err != nil {
-		log.Printf("%s", err)
+
+	if sw.ConnectToDb() {
+		// Open Browser with when run
+		const url = "http://www.localhost:8080/"
+		err := browser.OpenURL(url)
+		// Show error if something goes wrong.
+		if err != nil {
+			log.Printf("%s", err)
+		}
 	}
 
 	router := sw.NewRouter()

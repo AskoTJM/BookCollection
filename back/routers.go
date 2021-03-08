@@ -1,7 +1,6 @@
 package back
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -34,17 +33,41 @@ func NewRouter() *mux.Router {
 	return router
 }
 
-func Index(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Test print")
-	fmt.Fprintf(w, "Backend Developer Task")
-}
-
 var routes = Routes{
+	// Endpoint to serve index.html
 	Route{
 		"Index",
 		"GET",
 		"/",
 		Index,
+	},
+	// Endpoint to serve all the books
+	Route{
+		"GetAllBooks",
+		"GET",
+		"/books",
+		GetAllBooks,
+	},
+	// Endpoint to update a book
+	Route{
+		"UpdateBook",
+		"PATCH",
+		"/books/{book}",
+		UpdateBook,
+	},
+	// Endpoint to add new book
+	Route{
+		"AddBook",
+		"POST",
+		"/books",
+		NewBook,
+	},
+	// Endpoint to delete book
+	Route{
+		"DeleteBook",
+		"DELETE",
+		"/books/{book}",
+		DeleteBook,
 	},
 }
 
