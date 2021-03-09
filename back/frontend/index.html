@@ -68,9 +68,9 @@
     
     </textarea>
     <br/><br/>
-    <input id=saveNewBtn type="button" value="Save New" class="button" >
-    <input id=saveBtn type="button" value="Save" class="button"> 
-    <input id=deleteBtn type="button" value="Delete" class="button">
+    <input id=saveNewBtn type="button" value="Save New" class="button" disabled=true onclick="saveNewBook()">
+    <input id=saveBtn type="button" value="Save" class="button" disabled=true onclick="updateBook()"> 
+    <input id=deleteBtn type="button" value="Delete" class="button" disabled=true>
   </form>
   </table>
   </div>
@@ -90,13 +90,20 @@
   <br/>
 
   <script>
-    
+
+
     bookTable = document.querySelector("table")
     let selectedtd
     bookTable.onclick = function (event){
       let target = event.target.closest('tr');
-      if (target.id == '') return;
-      clickHandler(target)
+      // If we miss entirely, let's pretend we didn't.
+      if (target != null){
+      // Clicking on header row? Let's ignore that.  
+        if (target.id == '') return;
+        clickHandler(target)
+      }else{
+        return;
+      }
     }
 
     fetch("/books")
@@ -107,16 +114,19 @@
           
           // Create the table row
           row = document.createElement("tr")
-          
+          row.id = "row" + book.id
           
           title = document.createElement("td")
+          title.id = "title_"+row.id
           title.innerHTML = book.title
           author = document.createElement("td")
+          author.id = "author_"+row.id
           author.innerHTML = book.author
           description = document.createElement("td")
+          description.id = "description_"+row.id
           description.innerHTML = book.description
   
-          row.id = "row" + book.id
+          
 
           row.appendChild(title);
           row.appendChild(author);
@@ -127,13 +137,61 @@
         })
       })
 
-
+      // ClickHandler, when clicking on list of books.
       function clickHandler(input){
-        console.log(input);
+        backupFormData();
+
+        // Transfer data from clicked row to form.
+        document.getElementById("titleForm").value = document.getElementById("title_"+input.id).innerHTML;
+        document.getElementById("authorForm").value = document.getElementById("author_"+input.id).innerHTML;
+        document.getElementById("descriptionForm").value =  document.getElementById("description_"+input.id).innerHTML;
+        // Enabling Save button 
+        document.getElementById("saveBtn").disabled = false;
+        // Enabling Delete button
+        document.getElementById("deleteBtn").disabled = false;
+        //Debugging console output.
+        //console.log(input.id);
+        
+      }
+
+      function changeInput(){
+        
       }
       
-      function transferDataToForm() {
-      document.getElementById("titleForm").value = document.getElementById("1").value;
-    }
+      function backupFormData(){
+        // Clear previous values
+        sessionStorage.removeItem("prevID");
+        sessionStorage.removeItem("prevTitle");
+        sessionStorage.removeItem("prevAuthor");
+        sessionStorage.removeItem("prevDescription");
+        // Temporary variables for saving data
+        
+        titleTemp = document.getElementById("titleForm").value;
+        authorTemp = document.getElementById("authorForm").value;
+        descriptionTemp = document.getElementById("descriptionForm").value;    
+        
+        sessionStorage.setItem("prevTitle",titleTemp);
+        sessionStorage.setItem("prevAuthor",authorTemp);
+        sessionStorage.setItem("prevDescription",descriptionTemp);
+
+        //document.getElementById("titleForm").value = sessionStorage.getItem("defaultTitle");
+        console.log(titleTemp);
+        console.log(authorTemp);
+        console.log(descriptionTemp);
+      }
+      
+      // Send new book data to backend.
+      function saveNewBook(){
+
+      }
+
+      // Send updated book data to backend.
+      function updateBook(){
+
+      }
+      // Remove book from database.
+      function deleteBook(){
+
+      }
   </script>
 </body>
