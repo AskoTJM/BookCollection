@@ -67,23 +67,23 @@ func CreateTableForDb() bool {
 	if testData {
 		book := Book{
 			ID:          0,
-			Title:       "ATitle",
-			Author:      "AAuthor",
-			Description: "ADesc",
+			Title:       "The Adventures of Sherlock Holmes",
+			Author:      "Doyle, Arthur Conan",
+			Description: "A collection of twelve short stories by Arthur Conan Doyle, first published on 14 October 1892",
 		}
 		AddToDatabase(database, book)
 		book2 := Book{
 			ID:          0,
-			Title:       "BTitle",
-			Author:      "BAuthor",
-			Description: "BDesc",
+			Title:       "The Hollow",
+			Author:      "Christie, Agatha",
+			Description: `The novel is an example of a "country house mystery"... `,
 		}
 		AddToDatabase(database, book2)
 		book3 := Book{
 			ID:          0,
-			Title:       "CTitle",
-			Author:      "CAuthor",
-			Description: "CDesc",
+			Title:       "The Big Sleep",
+			Author:      "Chandler, Raymond",
+			Description: `The title is a euphemism for death; the final pages of the book refer to a rumination about "sleeping the big sleep".`,
 		}
 		AddToDatabase(database, book3)
 	}

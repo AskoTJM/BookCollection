@@ -15,11 +15,11 @@
     float: left;
     width: 50%;
     padding: 10px;
-    height: 300px; /* Should be removed. Only for demonstration */
+    height: 300px; 
   }
   
   .button{
-    width: 15%;
+    width: 25%;
   }
   
   .bookHeader{
@@ -33,7 +33,6 @@
 
   .descInput{
     width: 90%;
-    padding: 7px 14px;
   }
 
   h1{
@@ -64,24 +63,24 @@
     <input id="authorForm" type="text" name="Author" class="textInput">
     <br/>
     <br/> Description:<br/>
-    <textarea id="descriptionForm" name="Text1" cols="40" rows="5" class="descInput">
+    <textarea id="descriptionForm" name="Text1" cols="40" rows="5" textalign="left" class="descInput">
     
     </textarea>
     <br/><br/>
     <input id=saveNewBtn type="button" value="Save New" class="button" onclick="addNewBook()">
-    <input id=saveBtn type="button" value="Save" class="button" disabled=true onclick="updateBook()"> 
-    <input id=deleteBtn type="button" value="Delete" class="button" disabled=true onclick="deleteBook()">
+    <input id=saveBtn type="button" value="Save" class="button" onclick="updateBook()"> 
+    <input id=deleteBtn type="button" value="Delete" class="button" onclick="deleteBook()">
   </form>
   </table>
   </div>
 </th>
 
   <div class="column">
-  <table width=90%>
+  <table width=90% id=bookListTable> 
     <tr>
-      <th width=20% >Title</th>
-      <th width=20% >Author</th>
-      <th width=50% >Description</th>
+      <td width=20% ><strong>Title</strong></td>
+      <td width=20% ><strong>Author</strong></td>
+      <td width=50% ><strong>Description</strong></td>
     </tr>
     </tr>
   </table>
@@ -90,22 +89,31 @@
   <br/>
 
   <script>
+    // Run at page load.
+    populateBookList();
 
 
-    bookTable = document.querySelector("table")
-    let selectedtd
+  // Functions used.
+  
+  // Function to populate the BookList
+  function populateBookList(){
+    
+    var bookTable = document.querySelector("table")
+    bookTable.id = "bookTable"
+    
+    let selectedtd;
     bookTable.onclick = function (event){
       let target = event.target.closest('tr');
-      // If we miss entirely, let's pretend we didn't.
+      // If we miss entirely, let's pretend we didn't even try.
       if (target != null){
-      // Clicking on header row? Let's ignore that.  
+      // Clicking on header row? No we didn't.  
         if (target.id == '') return;
         clickHandler(target)
-      }else{
-        return;
+        }else{
+          return;
+        }
       }
-    }
-
+      
     fetch("/books")
       .then(response => response.json())
       .then(bookList => {
@@ -114,7 +122,6 @@
           
           // Create the table row
           row = document.createElement("tr")
-          //row.id = "row" + book.id
           row.id = book.id
 
           title = document.createElement("td")
@@ -126,142 +133,119 @@
           description = document.createElement("td")
           description.id = "description_"+row.id
           description.innerHTML = book.description
-  
-          
 
           row.appendChild(title);
           row.appendChild(author);
           row.appendChild(description);
           
           bookTable.appendChild(row)
-
+          
         })
       })
-
-      // ClickHandler, when clicking on book copies that data to the form.
-      function clickHandler(input){
-        //backupFormData();
-
-        // Transfer data from clicked row to form.
-        
-        // Remove the old and save the Id of the current book
-        sessionStorage.removeItem("currentId");
-        sessionStorage.setItem("currentId",input.id);
-
-        document.getElementById("titleForm").value = document.getElementById("title_"+input.id).innerHTML;
-        document.getElementById("authorForm").value = document.getElementById("author_"+input.id).innerHTML;
-        document.getElementById("descriptionForm").value =  document.getElementById("description_"+input.id).innerHTML;
-        // Enabling Save button 
-        document.getElementById("saveBtn").disabled = false;
-        // Enabling Delete button
-        document.getElementById("deleteBtn").disabled = false;
-        // Disabling Save New button
-        document.getElementById("saveNewBtn").disabled = true;
-        //Debugging console output.
-        //console.log(input.id);
-        backupFormData();
-      }
-
-      function changeInput(){
-        
-      }
-      // Copy form data to sessionStorage so we can compare it to changes made by the user
-      function backupFormData(){
-        // Clear previous values because we can't change them
-        sessionStorage.removeItem("prevID");
-        sessionStorage.removeItem("prevTitle");
-        sessionStorage.removeItem("prevAuthor");
-        sessionStorage.removeItem("prevDescription");
-        
-        // Temporary variables for saving data, didn't seem to like when
-        // trying to insert them directly to sessionsStorage 
-        let titleTemp = document.getElementById("titleForm").value;
-        let authorTemp = document.getElementById("authorForm").value;
-        let descriptionTemp = document.getElementById("descriptionForm").value;    
-        
-        // Create new sessionStorage items
-        sessionStorage.setItem("prevTitle",titleTemp);
-        sessionStorage.setItem("prevAuthor",authorTemp);
-        sessionStorage.setItem("prevDescription",descriptionTemp);
-
-        // Console output for testing.
-        console.log(titleTemp);
-        console.log(authorTemp);
-        console.log(descriptionTemp);
-      }
+    }
       
-      // Send new book data to backend.
-      function addNewBook(){
-        // Data for json object
-        let titleTemp = document.getElementById("titleForm").value;
-        let authorTemp = document.getElementById("authorForm").value;
-        let descriptionTemp = document.getElementById("descriptionForm").value;    
-        
-        (async () => {
-            const rawResponse = await fetch('http://127.0.0.1:8080/books', {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-          body: JSON.stringify({title : titleTemp, author: authorTemp,description: descriptionTemp})
-          });
+    // Send new book data to backend.
+    function addNewBook(){
+      // Data for json object
+      let titleTemp = document.getElementById("titleForm").value;
+      let authorTemp = document.getElementById("authorForm").value;
+      let descriptionTemp = document.getElementById("descriptionForm").value;    
+      
+      (async () => {
+          const rawResponse = await fetch('http://127.0.0.1:8080/books', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Header': '*',
+          },
+        body: JSON.stringify({title : titleTemp, author: authorTemp,description: descriptionTemp})
+        });
+      const content = await rawResponse.json();
+      console.log(content);
+      
+      })();
+      // Reloading the page, better way would be to update content of the book list.
+      // Ugly way to do it but only thing that I could get to work.
+      location.reload();
+    }
+
+    // Send updated book data to backend.
+    function updateBook(){
+
+      // Data for json object
+      let titleTemp = document.getElementById("titleForm").value;
+      let authorTemp = document.getElementById("authorForm").value;
+      let descriptionTemp = document.getElementById("descriptionForm").value;    
+      
+      (async () => {
+          const rawResponse = await fetch('http://127.0.0.1:8080/books/'+sessionStorage.getItem("currentId"), {
+          method: 'PATCH',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Header': '*',
+          },
+        body: JSON.stringify({title : titleTemp, author: authorTemp,description: descriptionTemp})
+        });
+      const content = await rawResponse.json();
+      console.log(content);
+      })();
+      // Reloading the page, better way would be to update content of the book list.
+      // Ugly way to do it but only thing that I could get to work for now.
+      location.reload();
+    }
+      
+    // Remove book from database.
+    function deleteBook(){
+           
+      (async () => {
+          const rawResponse = await fetch('http://127.0.0.1:8080/books/'+sessionStorage.getItem("currentId"), {
+          method: 'DELETE',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Header': '*',
+          },
+        });
         const content = await rawResponse.json();
         console.log(content);
       })();
       
-      }
+      // Reloading the page, better way would be to update content of the book list.
+      // Ugly way to do it but only thing that I could get to work.
+      location.reload();
+    }
 
-      // Send updated book data to backend.
-      function updateBook(){
 
-        // Data for json object
-        let titleTemp = document.getElementById("titleForm").value;
-        let authorTemp = document.getElementById("authorForm").value;
-        let descriptionTemp = document.getElementById("descriptionForm").value;    
-        
-        (async () => {
-            const rawResponse = await fetch('http://127.0.0.1:8080/books/'+sessionStorage.getItem("currentId"), {
-            method: 'PATCH',
-            //mode: 'no-cors',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Header': '*',
-            },
-          body: JSON.stringify({title : titleTemp, author: authorTemp,description: descriptionTemp})
-          });
-        const content = await rawResponse.json();
-        console.log(content);
-      })();
+    // ClickHandler, when clicking on book list data from row to the form.
+    function clickHandler(input){
+
+      // Transfer data from clicked row to form.
       
+      // Remove the old and save the Id of the current book
+      sessionStorage.removeItem("currentId");
+      sessionStorage.setItem("currentId",input.id);
 
-      }
-      // Remove book from database.
-      function deleteBook(){
-        
-        // Data for json object
-        //let titleTemp = document.getElementById("titleForm").value;
-        //let authorTemp = document.getElementById("authorForm").value;
-        //let descriptionTemp = document.getElementById("descriptionForm").value;    
-        
-        (async () => {
-            const rawResponse = await fetch('http://127.0.0.1:8080/books/'+sessionStorage.getItem("currentId"), {
-            method: 'DELETE',
-            //mode: 'no-cors',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Header': '*',
-            },
-          //body: JSON.stringify({title : titleTemp, author: authorTemp,description: descriptionTemp})
-          });
-        const content = await rawResponse.json();
-        console.log(content);
-      })();
-      }
+      document.getElementById("titleForm").value = document.getElementById("title_"+input.id).innerHTML;
+      document.getElementById("authorForm").value = document.getElementById("author_"+input.id).innerHTML;
+      document.getElementById("descriptionForm").value =  document.getElementById("description_"+input.id).innerHTML;
+      
+      // Disabled button switching. This way user can reuse partial data of one book to add new one
+      // Enabling Save button 
+      //document.getElementById("saveBtn").disabled = false;
+      // Enabling Delete button
+      //document.getElementById("deleteBtn").disabled = false;
+      // Disabling Save New button
+      //document.getElementById("saveNewBtn").disabled = true;
+      
+      //console.log(input.id);
+      //backupFormData();
+    }
+
+    
   </script>
 </body>

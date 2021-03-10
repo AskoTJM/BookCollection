@@ -9,6 +9,8 @@ With VSCode
 Run it with 'go run main.go' or with the executable.
 If the browser doesn't automatically open go to address localhost:8080
 
+If there is no books.db, it will be created with three books as sample data.
+
 Endpoints:
 
 GET /
@@ -40,6 +42,8 @@ DELETE /books/{index}
 Removes book from database
 
 Frontend:
+
+
 
 Made in HTML/Javascript
 
