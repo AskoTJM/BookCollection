@@ -54,7 +54,10 @@ func GetAllBooks(w http.ResponseWriter, r *http.Request) {
 func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	log.Printf("UpdateBook")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "*")
+	//setHeaders(&w)
 	var tempBook Book
 
 	// Decoding JSON->Book Struct
@@ -112,6 +115,8 @@ func NewBook(w http.ResponseWriter, r *http.Request) {
 	if errDecode != nil {
 		log.Printf("Error decoding json in functions.go->NewBook() %s", errDecode)
 		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Error")
+
 	}
 
 	// Connect to Database
@@ -127,7 +132,7 @@ func NewBook(w http.ResponseWriter, r *http.Request) {
 	// Add the book to database
 	errDB := AddToDatabase(database, tempBook)
 	if !errDB {
-		log.Printf("Connection to database failed in functions.go->NewBook()")
+		log.Printf("Adding to database failed in functions.go->NewBook()")
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "Error")
 	}
@@ -165,5 +170,16 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Returning from deleting book.")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "Book removed successfully.")
+
+}
+
+// Sets header values
+func setHeaders(w *http.ResponseWriter) {
+	// Big no no for real use, but CORS is being tricky and this is just local
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, PATCH")
+	(*w).Header().Set("Access-Control-Allow-Headers", "*")
+	(*w).Header().Set("Access-Control-Allow-Request-Method", "*")
+	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 }

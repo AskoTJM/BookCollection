@@ -68,9 +68,9 @@
     
     </textarea>
     <br/><br/>
-    <input id=saveNewBtn type="button" value="Save New" class="button" disabled=true onclick="saveNewBook()">
+    <input id=saveNewBtn type="button" value="Save New" class="button" onclick="addNewBook()">
     <input id=saveBtn type="button" value="Save" class="button" disabled=true onclick="updateBook()"> 
-    <input id=deleteBtn type="button" value="Delete" class="button" disabled=true>
+    <input id=deleteBtn type="button" value="Delete" class="button" disabled=true onclick="deleteBook()">
   </form>
   </table>
   </div>
@@ -114,8 +114,9 @@
           
           // Create the table row
           row = document.createElement("tr")
-          row.id = "row" + book.id
-          
+          //row.id = "row" + book.id
+          row.id = book.id
+
           title = document.createElement("td")
           title.id = "title_"+row.id
           title.innerHTML = book.title
@@ -137,11 +138,16 @@
         })
       })
 
-      // ClickHandler, when clicking on list of books.
+      // ClickHandler, when clicking on book copies that data to the form.
       function clickHandler(input){
-        backupFormData();
+        //backupFormData();
 
         // Transfer data from clicked row to form.
+        
+        // Remove the old and save the Id of the current book
+        sessionStorage.removeItem("currentId");
+        sessionStorage.setItem("currentId",input.id);
+
         document.getElementById("titleForm").value = document.getElementById("title_"+input.id).innerHTML;
         document.getElementById("authorForm").value = document.getElementById("author_"+input.id).innerHTML;
         document.getElementById("descriptionForm").value =  document.getElementById("description_"+input.id).innerHTML;
@@ -149,44 +155,88 @@
         document.getElementById("saveBtn").disabled = false;
         // Enabling Delete button
         document.getElementById("deleteBtn").disabled = false;
+        // Disabling Save New button
+        document.getElementById("saveNewBtn").disabled = true;
         //Debugging console output.
         //console.log(input.id);
-        
+        backupFormData();
       }
 
       function changeInput(){
         
       }
-      
+      // Copy form data to sessionStorage so we can compare it to changes made by the user
       function backupFormData(){
-        // Clear previous values
+        // Clear previous values because we can't change them
         sessionStorage.removeItem("prevID");
         sessionStorage.removeItem("prevTitle");
         sessionStorage.removeItem("prevAuthor");
         sessionStorage.removeItem("prevDescription");
-        // Temporary variables for saving data
         
-        titleTemp = document.getElementById("titleForm").value;
-        authorTemp = document.getElementById("authorForm").value;
-        descriptionTemp = document.getElementById("descriptionForm").value;    
+        // Temporary variables for saving data, didn't seem to like when
+        // trying to insert them directly to sessionsStorage 
+        let titleTemp = document.getElementById("titleForm").value;
+        let authorTemp = document.getElementById("authorForm").value;
+        let descriptionTemp = document.getElementById("descriptionForm").value;    
         
+        // Create new sessionStorage items
         sessionStorage.setItem("prevTitle",titleTemp);
         sessionStorage.setItem("prevAuthor",authorTemp);
         sessionStorage.setItem("prevDescription",descriptionTemp);
 
-        //document.getElementById("titleForm").value = sessionStorage.getItem("defaultTitle");
+        // Console output for testing.
         console.log(titleTemp);
         console.log(authorTemp);
         console.log(descriptionTemp);
       }
       
       // Send new book data to backend.
-      function saveNewBook(){
-
+      function addNewBook(){
+        // Data for json object
+        let titleTemp = document.getElementById("titleForm").value;
+        let authorTemp = document.getElementById("authorForm").value;
+        let descriptionTemp = document.getElementById("descriptionForm").value;    
+        
+        (async () => {
+            const rawResponse = await fetch('http://localhost:8080/books', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+          body: JSON.stringify({title : titleTemp, author: authorTemp,description: descriptionTemp})
+          });
+        const content = await rawResponse.json();
+        console.log(content);
+      })();
+      
       }
 
       // Send updated book data to backend.
       function updateBook(){
+
+        // Data for json object
+        let titleTemp = document.getElementById("titleForm").value;
+        let authorTemp = document.getElementById("authorForm").value;
+        let descriptionTemp = document.getElementById("descriptionForm").value;    
+        
+        (async () => {
+            const rawResponse = await fetch('http://127.0.0.1:8080/books/'+sessionStorage.getItem("currentId"), {
+            method: 'PATCH',
+            //mode: 'no-cors',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Header': '*',
+            },
+          body: JSON.stringify({title : titleTemp, author: authorTemp,description: descriptionTemp})
+          });
+        const content = await rawResponse.json();
+        console.log(content);
+      })();
+      
 
       }
       // Remove book from database.
