@@ -2,25 +2,33 @@
 Book Collection, Buutti Backend Developer Task
 March 2021 
 
-IMPORTANT!
-Frontend doesn't work with Firefox. Tested on Windows 10 and Ubuntu 20.04 Virtual Machine.
-Some issue with fetch.
+Install:
+Download repo as Zip.
+Extract.
 
-Tested working:
-Chrome works fine on both Windows 10 and VM Ubuntu 20.04.
-Brave and Edge in Windows 10.
-Opera in Ubuntu 20.04
+Options for running backend.
 
-Backend: 
-Programmed in Go 1.15.6
-Using Windows 10 Home 2004 and VSCode 
+1. On Windows: run bookcollection.exe
+2. On Linux: 
+    chmod +x bookcollection  
+    ./bookcollection
+3. If GO 1.15.6 is installed on machine
+    go run main.go
 
-Run with 'go run main.go' or with the executable.
 If the browser doesn't automatically open go to address 127.0.0.1:8080
 
-
-
 If there is no books.db, it will be created with three books as sample data.
+
+IMPORTANT!
+Frontend doesn't work with Firefox. Tested on Windows 10 and Ubuntu 20.04 Virtual Machine.
+For some reason it doesn't like fetch-command.
+
+Tested working:
+Chrome on both Windows 10 and Ubuntu 20.04 Virtual Machine.
+Brave and Edge in Windows 10.
+Opera in Ubuntu 20.04 Virtual Machine
+
+Backend: 
 
 Endpoints:
 
