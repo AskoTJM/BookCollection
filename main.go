@@ -16,7 +16,7 @@ func main() {
 
 	if sw.CheckIfDatabaseExists() {
 		// Open Browser with when run
-		const url = "http://www.localhost:8080/"
+		const url = "http://127.0.0.1:8080/"
 		err := browser.OpenURL(url)
 		// Show error if something goes wrong.
 		if err != nil {

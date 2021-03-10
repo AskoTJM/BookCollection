@@ -198,7 +198,7 @@
         let descriptionTemp = document.getElementById("descriptionForm").value;    
         
         (async () => {
-            const rawResponse = await fetch('http://localhost:8080/books', {
+            const rawResponse = await fetch('http://127.0.0.1:8080/books', {
             method: 'POST',
             mode: 'no-cors',
             headers: {
@@ -241,7 +241,27 @@
       }
       // Remove book from database.
       function deleteBook(){
-
+        
+        // Data for json object
+        //let titleTemp = document.getElementById("titleForm").value;
+        //let authorTemp = document.getElementById("authorForm").value;
+        //let descriptionTemp = document.getElementById("descriptionForm").value;    
+        
+        (async () => {
+            const rawResponse = await fetch('http://127.0.0.1:8080/books/'+sessionStorage.getItem("currentId"), {
+            method: 'DELETE',
+            //mode: 'no-cors',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Header': '*',
+            },
+          //body: JSON.stringify({title : titleTemp, author: authorTemp,description: descriptionTemp})
+          });
+        const content = await rawResponse.json();
+        console.log(content);
+      })();
       }
   </script>
 </body>
